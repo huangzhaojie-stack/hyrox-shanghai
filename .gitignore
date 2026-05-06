@@ -1,0 +1,7 @@
+# dev artifacts (data sources / scripts) — not needed for the deployed page
+*.json
+*.csv
+scrape.py
+compute_benchmarks.py
+__pycache__/
+.DS_Store

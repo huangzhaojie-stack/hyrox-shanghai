@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="HYROX">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' fill='%23000'/><text x='50%25' y='50%25' font-family='Helvetica' font-weight='900' font-size='52' fill='%23C5FF00' text-anchor='middle' dominant-baseline='central'>HYROX</text></svg>">
+<title>HYROX 训练 · 上海站</title>
+<style>
+  :root{
+    --bg:#000;
+    --card:#0d0d0d;
+    --card-2:#161616;
+    --border:#222;
+    --border-2:#2c2c2c;
+    --text:#fff;
+    --muted:#888;
+    --muted-2:#5a5a5a;
+    --accent:#C5FF00;
+    --accent-dim:rgba(197,255,0,.12);
+    --accent-line:rgba(197,255,0,.35);
+    --danger:#ff5252;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','PingFang SC','Hiragino Sans GB',sans-serif;font-size:16px;line-height:1.45;overscroll-behavior-y:contain}
+  body{padding:max(env(safe-area-inset-top),16px) 16px max(env(safe-area-inset-bottom),32px);max-width:560px;margin:0 auto}
+
+  /* HERO COUNTDOWN */
+  .hero{padding:8px 4px 24px;border-bottom:1px solid var(--border);margin-bottom:20px}
+  .brand{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+  .brand-logo{font-weight:900;letter-spacing:.04em;font-size:14px;color:var(--accent)}
+  .brand-tag{font-size:12px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+  .countdown-label{font-size:13px;color:var(--muted);margin-top:14px;letter-spacing:.06em}
+  .countdown{display:flex;gap:6px;margin-top:8px;font-variant-numeric:tabular-nums}
+  .cd-block{flex:1;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 6px;text-align:center}
+  .cd-num{font-size:32px;font-weight:800;color:var(--accent);line-height:1}
+  .cd-unit{font-size:11px;color:var(--muted);margin-top:6px;letter-spacing:.1em}
+  .race-meta{font-size:13px;color:var(--muted);margin-top:14px;display:flex;justify-content:space-between;align-items:center}
+  .race-meta b{color:#ccc;font-weight:500}
+
+  /* CARDS */
+  section.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 16px;margin-bottom:16px}
+  section.card h2{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  section.card h2::before{content:'';width:4px;height:14px;background:var(--accent);border-radius:2px}
+
+  /* ESTIMATE */
+  .est-total{font-size:48px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1;letter-spacing:-.02em}
+  .est-sub{font-size:12px;color:var(--muted);margin-top:6px}
+  .est-sub.warn{color:#ff9d52}
+  .est-rows{margin-top:18px;display:flex;flex-direction:column;gap:2px}
+  .est-row{display:grid;grid-template-columns:28px 1fr auto;gap:10px;padding:10px 8px;border-radius:8px;font-size:14px;align-items:center}
+  .est-row:nth-child(odd){background:var(--card-2)}
+  .est-row .idx{font-size:18px;line-height:1;text-align:center;color:#ccc}
+  .est-row .name{color:#ddd}
+  .est-row .name small{color:var(--muted);font-size:11px;margin-left:6px}
+  .est-row .val{color:var(--accent);font-variant-numeric:tabular-nums;font-weight:600}
+  .est-row.run .name{color:#9aa}
+  .est-row.run .val{color:#9aa}
+  .est-foot{margin-top:12px;padding-top:12px;border-top:1px dashed var(--border-2);font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
+
+  /* PR GRID */
+  .pr-grid{display:flex;flex-direction:column;gap:10px}
+  .pr-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:12px;background:var(--card-2);border:1px solid var(--border);border-radius:10px;position:relative}
+  .pr-row .label{font-size:14px}
+  .pr-row .label .desc{font-size:11px;color:var(--muted);margin-top:2px}
+  .pr-row .pct{display:inline-block;font-size:10px;font-weight:700;color:#000;background:var(--accent);padding:1px 6px;border-radius:8px;margin-top:4px;letter-spacing:.04em;font-variant-numeric:tabular-nums}
+  .pr-row .pct.weak{background:#ff9d52}
+  .pr-row .pct.mid{background:#FFD700}
+  .pr-row .pct.strong{background:var(--accent)}
+  .pr-row .pct.elite{background:#52ff9d}
+
+  /* BENCHMARK */
+  .bench-toggle{display:flex;gap:4px;margin-bottom:14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:3px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .bench-toggle::-webkit-scrollbar{display:none}
+  .bench-toggle button{flex:0 0 auto;background:none;border:none;color:var(--muted);font-size:12px;font-weight:600;padding:8px 12px;border-radius:7px;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .bench-toggle button.active{background:var(--accent);color:#000}
+  .bench-summary{padding:14px;background:var(--card-2);border:1px solid var(--border);border-radius:10px;margin-bottom:14px}
+  .bench-sum-label{font-size:11px;color:var(--muted);letter-spacing:.08em;margin-bottom:6px}
+  .bench-sum-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;text-align:center;margin-top:4px}
+  .bench-sum-grid div{display:flex;flex-direction:column;gap:2px;padding:6px 2px;background:var(--bg);border-radius:6px}
+  .bench-sum-grid .pct-label{font-size:10px;color:var(--muted-2)}
+  .bench-sum-grid .pct-val{font-size:13px;font-weight:700;color:#ddd;font-variant-numeric:tabular-nums}
+  .bench-sum-grid .pct-val.you{color:var(--accent)}
+  .bench-stations-table{width:100%;font-size:12px;border-collapse:collapse}
+  .bench-stations-table th{font-size:10px;color:var(--muted);font-weight:600;text-align:right;padding:6px 4px;letter-spacing:.04em;border-bottom:1px solid var(--border)}
+  .bench-stations-table th:first-child{text-align:left}
+  .bench-stations-table td{padding:8px 4px;text-align:right;color:#ccc;font-variant-numeric:tabular-nums;border-bottom:1px solid var(--border)}
+  .bench-stations-table td:first-child{text-align:left;color:#ddd}
+  .bench-stations-table td .nm{font-weight:600}
+  .bench-stations-table td .ds{font-size:10px;color:var(--muted);margin-left:4px}
+  .bench-stations-table td.you{color:var(--accent);font-weight:700}
+  .bench-stations-table td.you-bad{color:#ff9d52;font-weight:700}
+  .pr-row .input{display:flex;gap:4px;align-items:center}
+  .pr-row input[type=number]{width:72px;background:#000;border:1px solid var(--border-2);color:var(--text);font-size:20px;padding:10px 6px;text-align:center;border-radius:8px;font-variant-numeric:tabular-nums;font-family:inherit;-moz-appearance:textfield;font-weight:700;letter-spacing:.02em}
+  .pr-row input[type=number]::-webkit-inner-spin-button,.pr-row input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+  .pr-row input:focus{outline:none;border-color:var(--accent)}
+  .pr-row .sep{color:var(--muted);font-weight:700}
+  .pr-row .unit{font-size:11px;color:var(--muted);margin-left:4px;min-width:18px}
+
+  /* TRAINING LOG */
+  .log-add{display:block;width:100%;padding:14px;background:var(--accent);color:#000;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:.02em}
+  .log-add:active{opacity:.7}
+  .log-list{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+  .log-empty{text-align:center;color:var(--muted-2);font-size:13px;padding:24px 0}
+  .log-item{background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+  .log-item-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:4px}
+  .log-item-date{font-size:13px;color:var(--accent);font-variant-numeric:tabular-nums;font-weight:600}
+  .log-item-type{font-size:11px;color:var(--muted);background:var(--bg);padding:2px 8px;border-radius:10px;border:1px solid var(--border-2)}
+  .log-item-detail{font-size:14px;color:#ccc;margin-top:4px}
+  .log-item-meta{font-size:12px;color:var(--muted);margin-top:6px;display:flex;gap:14px}
+  .log-item-del{font-size:11px;color:var(--muted-2);background:none;border:none;padding:4px 0;cursor:pointer;margin-top:6px;font-family:inherit}
+  .log-item-del:active{color:var(--danger)}
+
+  /* SETTINGS */
+  .settings summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+  .settings summary::-webkit-details-marker{display:none}
+  .settings summary h2{margin-bottom:0}
+  .settings summary::after{content:'▾';color:var(--muted);font-size:14px}
+  .settings[open] summary::after{transform:rotate(180deg)}
+  .settings-body{margin-top:18px;display:flex;flex-direction:column;gap:14px}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field label{font-size:12px;color:var(--muted);letter-spacing:.05em}
+  .field input,.field select{background:#000;border:1px solid var(--border-2);color:var(--text);font-size:15px;padding:10px 12px;border-radius:8px;font-family:inherit}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--accent)}
+  .btn-row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+  .btn{padding:10px 14px;border-radius:8px;border:1px solid var(--border-2);background:var(--card-2);color:var(--text);font-size:13px;font-family:inherit;cursor:pointer;flex:1;min-width:120px}
+  .btn:active{opacity:.7}
+  .btn.danger{color:var(--danger);border-color:rgba(255,82,82,.3)}
+
+  /* MODAL */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:100;display:flex;align-items:flex-end;justify-content:center;padding:16px;padding-bottom:max(env(safe-area-inset-bottom),16px)}
+  .modal[hidden]{display:none}
+  .modal-card{background:var(--card);border:1px solid var(--border);border-radius:16px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px}
+  .modal-card h3{font-size:18px;font-weight:700;margin-bottom:4px}
+  .modal-card .field textarea{background:#000;border:1px solid var(--border-2);color:var(--text);font-size:15px;padding:10px 12px;border-radius:8px;font-family:inherit;min-height:80px;resize:vertical}
+  .modal-actions{display:flex;gap:8px;margin-top:6px}
+  .modal-actions .btn.primary{background:var(--accent);color:#000;border:none;font-weight:700}
+
+  /* footer */
+  .foot{font-size:11px;color:var(--muted-2);text-align:center;padding:24px 0;letter-spacing:.06em}
+  .foot b{color:var(--accent)}
+
+  @media (min-width: 480px){
+    .cd-num{font-size:38px}
+    .est-total{font-size:56px}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="brand">
+    <span class="brand-logo">HYROX</span>
+    <span class="brand-tag">Shanghai · Doubles Mixed</span>
+  </div>
+  <div class="countdown-label">距比赛还有</div>
+  <div class="countdown" id="countdown">
+    <div class="cd-block"><div class="cd-num" id="cd-d">--</div><div class="cd-unit">DAYS</div></div>
+    <div class="cd-block"><div class="cd-num" id="cd-h">--</div><div class="cd-unit">HRS</div></div>
+    <div class="cd-block"><div class="cd-num" id="cd-m">--</div><div class="cd-unit">MIN</div></div>
+    <div class="cd-block"><div class="cd-num" id="cd-s">--</div><div class="cd-unit">SEC</div></div>
+  </div>
+  <div class="race-meta">
+    <span><b id="race-date-disp">2026-05-16 周六</b></span>
+    <span id="team-disp">Raymond × Lain</span>
+  </div>
+</div>
+
+<section class="card" id="estimate-card">
+  <h2>预估完赛时间</h2>
+  <div class="est-total" id="est-total">--:--:--</div>
+  <div class="est-sub" id="est-sub">填入下方极限数据后自动计算</div>
+  <div class="est-rows" id="est-rows"></div>
+  <div class="est-foot">
+    <span>含 8 km 团队跑（取较慢者配速）</span>
+    <span>+ 站点疲劳系数 / 交接 60s</span>
+  </div>
+</section>
+
+<section class="card">
+  <h2>对标 HK25 · Doubles Mixed</h2>
+  <div class="bench-toggle" id="bench-toggle">
+    <button data-set="HK25 Mixed 16-24">16-24 (30)</button>
+    <button data-set="HK25 Mixed 25-29">25-29 (159)</button>
+    <button data-set="HK25 Mixed 30-34">30-34 (181)</button>
+    <button data-set="HK25 Mixed 35-39">35-39 (119)</button>
+    <button class="active" data-set="HK25 Mixed 40-44">40-44 (61)</button>
+    <button data-set="HK25 Mixed 45-49">45-49 (23)</button>
+    <button data-set="HK25 Mixed 50-54">50-54 (13)</button>
+    <button data-set="HK25 Mixed All">全 Mixed (589)</button>
+  </div>
+  <div class="bench-summary">
+    <div class="bench-sum-label">总完赛时间分布</div>
+    <div class="bench-sum-grid" id="bench-total-grid"></div>
+  </div>
+  <table class="bench-stations-table">
+    <thead><tr><th>站点</th><th>P25</th><th>P50</th><th>你</th></tr></thead>
+    <tbody id="bench-stations-body"></tbody>
+  </table>
+  <div class="est-foot" style="margin-top:14px;flex-direction:column;align-items:flex-start;gap:6px;border-top:1px dashed var(--border-2)">
+    <div style="line-height:1.6">
+      <b style="color:#aaa">P 是什么？</b>
+      P 即 percentile（百分位）。<b style="color:#aaa">P25</b> = 当时赛场上 75% 的队比这个时间快、25% 的队比这个慢；<b style="color:#aaa">P50</b> = 中位数（一半人快、一半人慢）；<b style="color:#aaa">P90</b> = 只有前 10% 的人比你快。<b style="color:var(--accent)">P 越高 = 你越靠前</b>。
+    </div>
+    <div style="opacity:.7">来源 results.hyrox.com · 2025 HK Doubles Mixed</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>极限数据 · PR</h2>
+  <div class="pr-grid" id="pr-grid"></div>
+  <button class="log-add" id="back-to-est-btn" style="margin-top:14px;background:var(--card-2);color:var(--accent);border:1px solid var(--accent-line)">↑ 查看完赛预估时间</button>
+  <div class="est-foot" style="margin-top:14px">
+    <span>所有项目均按 <b style="color:#bbb">男子标准</b> 执行（双人混合规则）</span>
+  </div>
+</section>
+
+<section class="card">
+  <h2>训练日志</h2>
+  <button class="log-add" id="log-add-btn">+ 新增训练</button>
+  <div class="log-list" id="log-list"></div>
+</section>
+
+<details class="card settings" id="settings">
+  <summary><h2>设置</h2></summary>
+  <div class="settings-body">
+    <div class="field">
+      <label>比赛日期与时间</label>
+      <input type="datetime-local" id="set-race-date">
+    </div>
+    <div class="field">
+      <label>队员 1（默认显示）</label>
+      <input type="text" id="set-athlete-a" maxlength="20">
+    </div>
+    <div class="field">
+      <label>队员 2</label>
+      <input type="text" id="set-athlete-b" maxlength="20">
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="export-btn">导出 JSON</button>
+      <button class="btn" id="import-btn">导入 JSON</button>
+      <button class="btn danger" id="reset-btn">清空数据</button>
+    </div>
+    <input type="file" id="import-file" accept="application/json" hidden>
+  </div>
+</details>
+
+<div class="foot">
+  HYROX 上海站 · <b>FOR THE FITTEST</b>
+</div>
+
+<!-- LOG MODAL -->
+<div class="modal" id="log-modal" hidden>
+  <div class="modal-card">
+    <h3 id="log-modal-title">新增训练</h3>
+    <div class="field">
+      <label>日期</label>
+      <input type="date" id="log-date">
+    </div>
+    <div class="field">
+      <label>类型</label>
+      <select id="log-type">
+        <option>站点专项</option>
+        <option>compromised running</option>
+        <option>模拟赛</option>
+        <option>跑步</option>
+        <option>力量</option>
+        <option>恢复 / 拉伸</option>
+        <option>休息</option>
+        <option>其他</option>
+      </select>
+    </div>
+    <div class="field" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="field"><label>时长（分钟）</label><input type="number" id="log-duration" inputmode="numeric" min="0"></div>
+      <div class="field"><label>距离（km，选填）</label><input type="number" id="log-distance" inputmode="decimal" step="0.1" min="0"></div>
+    </div>
+    <div class="field">
+      <label>记录 / 感受</label>
+      <textarea id="log-notes" placeholder="例：5×400m 间歇 + 50 个 wall ball / 配速 4:30 / 心率 165"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" id="log-cancel">取消</button>
+      <button class="btn primary" id="log-save">保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+//// ─────────── HYROX TRAINING APP ───────────
+
+// ─── BENCHMARK DATA · 2025 Hong Kong Doubles Mixed (results.hyrox.com) ───
+const HYROX_BENCH = {"HK25 Mixed 16-24":{"label":"HK25 Mixed 16-24","n_teams":30,"totals":{"n":30,"p10":4291,"p25":5133,"p50":5672,"p75":6402,"p90":6807,"min":3973,"max":8245,"mean":5696},"roxzone":{},"stations":[{"i":1,"name":"SkiErg","desc":"1000m","n":30,"p10":251,"p25":259,"p50":272,"p75":289,"p90":300,"min":237,"max":320,"mean":275},{"i":2,"name":"Sled Push","desc":"50m·152kg","n":30,"p10":117,"p25":140,"p50":160,"p75":191,"p90":228,"min":92,"max":278,"mean":169},{"i":3,"name":"Sled Pull","desc":"50m·103kg","n":30,"p10":205,"p25":246,"p50":280,"p75":332,"p90":395,"min":189,"max":432,"mean":289},{"i":4,"name":"Burpee BJ","desc":"80m","n":30,"p10":170,"p25":187,"p50":211,"p75":261,"p90":294,"min":135,"max":402,"mean":228},{"i":5,"name":"Row","desc":"1000m","n":30,"p10":263,"p25":284,"p50":298,"p75":319,"p90":328,"min":252,"max":349,"mean":299},{"i":6,"name":"Farmers Carry","desc":"200m·2×24kg","n":30,"p10":90,"p25":100,"p50":112,"p75":136,"p90":142,"min":84,"max":159,"mean":116},{"i":7,"name":"Sandbag Lunges","desc":"100m·20kg","n":30,"p10":195,"p25":228,"p50":261,"p75":308,"p90":337,"min":168,"max":387,"mean":266},{"i":8,"name":"Wall Balls","desc":"100·6kg","n":30,"p10":236,"p25":271,"p50":299,"p75":368,"p90":415,"min":203,"max":505,"mean":317}],"runs":[{"i":1,"n":30,"p10":178,"p25":200,"p50":224,"p75":252,"p90":262,"min":156,"max":463,"mean":229},{"i":2,"n":30,"p10":316,"p25":338,"p50":393,"p75":422,"p90":490,"min":264,"max":634,"mean":399},{"i":3,"n":30,"p10":319,"p25":346,"p50":405,"p75":430,"p90":508,"min":272,"max":776,"mean":410},{"i":4,"n":30,"p10":310,"p25":344,"p50":416,"p75":462,"p90":494,"min":272,"max":988,"mean":428},{"i":5,"n":30,"p10":323,"p25":362,"p50":427,"p75":479,"p90":522,"min":283,"max":762,"mean":432},{"i":6,"n":30,"p10":316,"p25":364,"p50":404,"p75":484,"p90":522,"min":271,"max":667,"mean":426},{"i":7,"n":30,"p10":320,"p25":356,"p50":396,"p75":517,"p90":562,"min":277,"max":677,"mean":433},{"i":8,"n":30,"p10":315,"p25":365,"p50":430,"p75":528,"p90":634,"min":272,"max":792,"mean":463}]},"HK25 Mixed 25-29":{"label":"HK25 Mixed 25-29","n_teams":159,"totals":{"n":159,"p10":4514,"p25":5126,"p50":5956,"p75":6778,"p90":7588,"min":3502,"max":9627,"mean":5982},"roxzone":{},"stations":[{"i":1,"name":"SkiErg","desc":"1000m","n":159,"p10":251,"p25":260,"p50":275,"p75":292,"p90":314,"min":231,"max":362,"mean":278},{"i":2,"name":"Sled Push","desc":"50m·152kg","n":159,"p10":119,"p25":138,"p50":171,"p75":207,"p90":249,"min":97,"max":459,"mean":182},{"i":3,"name":"Sled Pull","desc":"50m·103kg","n":159,"p10":220,"p25":258,"p50":304,"p75":357,"p90":415,"min":165,"max":591,"mean":314},{"i":4,"name":"Burpee BJ","desc":"80m","n":159,"p10":168,"p25":199,"p50":237,"p75":280,"p90":319,"min":99,"max":557,"mean":245},{"i":5,"name":"Row","desc":"1000m","n":159,"p10":271,"p25":286,"p50":304,"p75":330,"p90":346,"min":243,"max":394,"mean":308},{"i":6,"name":"Farmers Carry","desc":"200m·2×24kg","n":159,"p10":96,"p25":109,"p50":123,"p75":137,"p90":154,"min":77,"max":267,"mean":125},{"i":7,"name":"Sandbag Lunges","desc":"100m·20kg","n":159,"p10":207,"p25":241,"p50":285,"p75":332,"p90":403,"min":150,"max":1522,"mean":303},{"i":8,"name":"Wall Balls","desc":"100·6kg","n":159,"p10":229,"p25":258,"p50":316,"p75":400,"p90":517,"min":182,"max":1211,"mean":354}],"runs":[{"i":1,"n":159,"p10":188,"p25":212,"p50":235,"p75":262,"p90":393,"min":144,"max":615,"mean":255},{"i":2,"n":159,"p10":309,"p25":348,"p50":381,"p75":438,"p90":515,"min":170,"max":720,"mean":404},{"i":3,"n":158,"p10":329,"p25":363,"p50":408,"p75":463,"p90":579,"min":212,"max":733,"mean":424},{"i":4,"n":158,"p10":325,"p25":366,"p50":406,"p75":472,"p90":598,"min":213,"max":881,"mean":432},{"i":5,"n":158,"p10":335,"p25":377,"p50":424,"p75":488,"p90":604,"min":250,"max":805,"mean":446},{"i":6,"n":158,"p10":328,"p25":372,"p50":415,"p75":472,"p90":599,"min":248,"max":890,"mean":440},{"i":7,"n":158,"p10":335,"p25":370,"p50":421,"p75":480,"p90":617,"min":257,"max":805,"mean":440},{"i":8,"n":159,"p10":324,"p25":370,"p50":440,"p75":534,"p90":723,"min":245,"max":1107,"mean":475}]},"HK25 Mixed 30-34":{"label":"HK25 Mixed 30-34","n_teams":181,"totals":{"n":181,"p10":4464,"p25":4915,"p50":5676,"p75":6525,"p90":7355,"min":3833,"max":10284,"mean":5829},"roxzone":{},"stations":[{"i":1,"name":"SkiErg","desc":"1000m","n":181,"p10":246,"p25":260,"p50":274,"p75":290,"p90":309,"min":227,"max":463,"mean":277},{"i":2,"name":"Sled Push","desc":"50m·152kg","n":181,"p10":120,"p25":137,"p50":159,"p75":199,"p90":235,"min":92,"max":531,"mean":172},{"i":3,"name":"Sled Pull","desc":"50m·103kg","n":181,"p10":211,"p25":248,"p50":293,"p75":363,"p90":405,"min":135,"max":915,"mean":308},{"i":4,"name":"Burpee BJ","desc":"80m","n":181,"p10":178,"p25":196,"p50":233,"p75":274,"p90":321,"min":121,"max":467,"mean":242},{"i":5,"name":"Row","desc":"1000m","n":181,"p10":269,"p25":280,"p50":303,"p75":322,"p90":344,"min":245,"max":428,"mean":305},{"i":6,"name":"Farmers Carry","desc":"200m·2×24kg","n":181,"p10":98,"p25":107,"p50":118,"p75":132,"p90":158,"min":77,"max":3137,"mean":141},{"i":7,"name":"Sandbag Lunges","desc":"100m·20kg","n":181,"p10":207,"p25":233,"p50":278,"p75":328,"p90":396,"min":166,"max":1144,"mean":299},{"i":8,"name":"Wall Balls","desc":"100·6kg","n":181,"p10":229,"p25":252,"p50":300,"p75":383,"p90":519,"min":202,"max":996,"mean":344}],"runs":[{"i":1,"n":181,"p10":183,"p25":207,"p50":235,"p75":259,"p90":358,"min":146,"max":494,"mean":248},{"i":2,"n":180,"p10":301,"p25":333,"p50":384,"p75":427,"p90":506,"min":245,"max":700,"mean":395},{"i":3,"n":181,"p10":313,"p25":348,"p50":390,"p75":457,"p90":529,"min":142,"max":734,"mean":411},{"i":4,"n":181,"p10":316,"p25":347,"p50":392,"p75":462,"p90":557,"min":250,"max":965,"mean":417},{"i":5,"n":180,"p10":325,"p25":356,"p50":414,"p75":481,"p90":591,"min":258,"max":823,"mean":435},{"i":6,"n":181,"p10":319,"p25":353,"p50":405,"p75":476,"p90":544,"min":256,"max":814,"mean":423},{"i":7,"n":180,"p10":322,"p25":353,"p50":402,"p75":480,"p90":567,"min":257,"max":780,"mean":425},{"i":8,"n":181,"p10":319,"p25":355,"p50":421,"p75":540,"p90":695,"min":235,"max":1236,"mean":480}]},"HK25 Mixed 35-39":{"label":"HK25 Mixed 35-39","n_teams":119,"totals":{"n":119,"p10":4605,"p25":5048,"p50":5642,"p75":6406,"p90":7286,"min":3818,"max":10564,"mean":5816},"roxzone":{},"stations":[{"i":1,"name":"SkiErg","desc":"1000m","n":119,"p10":249,"p25":263,"p50":276,"p75":293,"p90":302,"min":230,"max":353,"mean":277},{"i":2,"name":"Sled Push","desc":"50m·152kg","n":119,"p10":123,"p25":140,"p50":166,"p75":190,"p90":228,"min":109,"max":361,"mean":172},{"i":3,"name":"Sled Pull","desc":"50m·103kg","n":119,"p10":220,"p25":263,"p50":294,"p75":361,"p90":407,"min":174,"max":615,"mean":311},{"i":4,"name":"Burpee BJ","desc":"80m","n":119,"p10":173,"p25":204,"p50":230,"p75":276,"p90":320,"min":143,"max":497,"mean":244},{"i":5,"name":"Row","desc":"1000m","n":119,"p10":271,"p25":284,"p50":300,"p75":320,"p90":343,"min":147,"max":453,"mean":304},{"i":6,"name":"Farmers Carry","desc":"200m·2×24kg","n":119,"p10":99,"p25":108,"p50":120,"p75":136,"p90":149,"min":68,"max":303,"mean":126},{"i":7,"name":"Sandbag Lunges","desc":"100m·20kg","n":119,"p10":209,"p25":246,"p50":282,"p75":328,"p90":390,"min":162,"max":707,"mean":295},{"i":8,"name":"Wall Balls","desc":"100·6kg","n":119,"p10":232,"p25":254,"p50":297,"p75":398,"p90":502,"min":207,"max":811,"mean":338}],"runs":[{"i":1,"n":119,"p10":183,"p25":206,"p50":233,"p75":270,"p90":360,"min":147,"max":476,"mean":249},{"i":2,"n":119,"p10":303,"p25":340,"p50":378,"p75":422,"p90":523,"min":253,"max":936,"mean":399},{"i":3,"n":119,"p10":319,"p25":362,"p50":394,"p75":438,"p90":535,"min":274,"max":931,"mean":416},{"i":4,"n":119,"p10":322,"p25":362,"p50":398,"p75":446,"p90":549,"min":269,"max":777,"mean":417},{"i":5,"n":119,"p10":328,"p25":363,"p50":416,"p75":464,"p90":559,"min":276,"max":950,"mean":434},{"i":6,"n":119,"p10":326,"p25":369,"p50":411,"p75":453,"p90":518,"min":276,"max":965,"mean":426},{"i":7,"n":119,"p10":327,"p25":370,"p50":408,"p75":449,"p90":533,"min":262,"max":858,"mean":423},{"i":8,"n":119,"p10":321,"p25":368,"p50":409,"p75":486,"p90":645,"min":270,"max":1606,"mean":458}]},"HK25 Mixed 40-44":{"label":"HK25 Mixed 40-44","n_teams":61,"totals":{"n":61,"p10":4669,"p25":4969,"p50":5618,"p75":6213,"p90":6699,"min":4145,"max":8543,"mean":5693},"roxzone":{},"stations":[{"i":1,"name":"SkiErg","desc":"1000m","n":61,"p10":254,"p25":262,"p50":272,"p75":289,"p90":306,"min":232,"max":331,"mean":276},{"i":2,"name":"Sled Push","desc":"50m·152kg","n":61,"p10":121,"p25":138,"p50":159,"p75":184,"p90":229,"min":96,"max":341,"mean":169},{"i":3,"name":"Sled Pull","desc":"50m·103kg","n":61,"p10":220,"p25":254,"p50":287,"p75":347,"p90":385,"min":178,"max":478,"mean":299},{"i":4,"name":"Burpee BJ","desc":"80m","n":61,"p10":177,"p25":206,"p50":229,"p75":266,"p90":305,"min":153,"max":377,"mean":238},{"i":5,"name":"Row","desc":"1000m","n":61,"p10":275,"p25":285,"p50":298,"p75":322,"p90":336,"min":250,"max":399,"mean":304},{"i":6,"name":"Farmers Carry","desc":"200m·2×24kg","n":61,"p10":100,"p25":108,"p50":120,"p75":134,"p90":152,"min":93,"max":169,"mean":123},{"i":7,"name":"Sandbag Lunges","desc":"100m·20kg","n":61,"p10":219,"p25":257,"p50":281,"p75":339,"p90":414,"min":179,"max":472,"mean":302},{"i":8,"name":"Wall Balls","desc":"100·6kg","n":61,"p10":236,"p25":250,"p50":297,"p75":368,"p90":481,"min":208,"max":1307,"mean":339}],"runs":[{"i":1,"n":61,"p10":194,"p25":208,"p50":228,"p75":251,"p90":289,"min":161,"max":453,"mean":239},{"i":2,"n":61,"p10":318,"p25":336,"p50":380,"p75":401,"p90":449,"min":277,"max":638,"mean":386},{"i":3,"n":61,"p10":336,"p25":359,"p50":399,"p75":434,"p90":504,"min":286,"max":644,"mean":411},{"i":4,"n":61,"p10":335,"p25":357,"p50":397,"p75":443,"p90":488,"min":292,"max":712,"mean":412},{"i":5,"n":61,"p10":340,"p25":361,"p50":410,"p75":444,"p90":490,"min":307,"max":632,"mean":414},{"i":6,"n":61,"p10":334,"p25":361,"p50":404,"p75":447,"p90":498,"min":299,"max":794,"mean":412},{"i":7,"n":61,"p10":341,"p25":356,"p50":400,"p75":447,"p90":502,"min":307,"max":821,"mean":415},{"i":8,"n":61,"p10":341,"p25":358,"p50":415,"p75":502,"p90":631,"min":302,"max":838,"mean":451}]},"HK25 Mixed 45-49":{"label":"HK25 Mixed 45-49","n_teams":23,"totals":{"n":23,"p10":5181,"p25":5434,"p50":6081,"p75":6627,"p90":7109,"min":4955,"max":7162,"mean":6082},"roxzone":{},"stations":[{"i":1,"name":"SkiErg","desc":"1000m","n":23,"p10":263,"p25":264,"p50":277,"p75":286,"p90":301,"min":248,"max":326,"mean":279},{"i":2,"name":"Sled Push","desc":"50m·152kg","n":23,"p10":143,"p25":158,"p50":183,"p75":200,"p90":248,"min":128,"max":286,"mean":185},{"i":3,"name":"Sled Pull","desc":"50m·103kg","n":23,"p10":274,"p25":290,"p50":327,"p75":346,"p90":379,"min":191,"max":481,"mean":328},{"i":4,"name":"Burpee BJ","desc":"80m","n":23,"p10":220,"p25":250,"p50":261,"p75":287,"p90":312,"min":197,"max":355,"mean":268},{"i":5,"name":"Row","desc":"1000m","n":23,"p10":283,"p25":296,"p50":310,"p75":328,"p90":356,"min":261,"max":384,"mean":314},{"i":6,"name":"Farmers Carry","desc":"200m·2×24kg","n":23,"p10":101,"p25":106,"p50":125,"p75":134,"p90":140,"min":97,"max":158,"mean":122},{"i":7,"name":"Sandbag Lunges","desc":"100m·20kg","n":23,"p10":246,"p25":263,"p50":299,"p75":330,"p90":354,"min":241,"max":414,"mean":302},{"i":8,"name":"Wall Balls","desc":"100·6kg","n":23,"p10":273,"p25":298,"p50":341,"p75":384,"p90":463,"min":231,"max":557,"mean":350}],"runs":[{"i":1,"n":23,"p10":204,"p25":222,"p50":235,"p75":266,"p90":360,"min":200,"max":488,"mean":262},{"i":2,"n":23,"p10":321,"p25":364,"p50":390,"p75":430,"p90":455,"min":312,"max":597,"mean":400},{"i":3,"n":23,"p10":330,"p25":375,"p50":413,"p75":461,"p90":523,"min":318,"max":940,"mean":440},{"i":4,"n":23,"p10":336,"p25":378,"p50":417,"p75":462,"p90":499,"min":319,"max":614,"mean":425},{"i":5,"n":23,"p10":351,"p25":394,"p50":443,"p75":480,"p90":512,"min":339,"max":627,"mean":444},{"i":6,"n":23,"p10":342,"p25":399,"p50":451,"p75":481,"p90":531,"min":333,"max":621,"mean":444},{"i":7,"n":23,"p10":340,"p25":390,"p50":447,"p75":484,"p90":536,"min":333,"max":645,"mean":446},{"i":8,"n":23,"p10":348,"p25":396,"p50":480,"p75":542,"p90":640,"min":340,"max":727,"mean":485}]},"HK25 Mixed 50-54":{"label":"HK25 Mixed 50-54","n_teams":13,"totals":{"n":13,"p10":5057,"p25":5404,"p50":6029,"p75":6588,"p90":7475,"min":4567,"max":7885,"mean":6064},"roxzone":{},"stations":[{"i":1,"name":"SkiErg","desc":"1000m","n":13,"p10":266,"p25":278,"p50":293,"p75":304,"p90":307,"min":262,"max":323,"mean":290},{"i":2,"name":"Sled Push","desc":"50m·152kg","n":13,"p10":143,"p25":155,"p50":174,"p75":199,"p90":230,"min":131,"max":240,"mean":181},{"i":3,"name":"Sled Pull","desc":"50m·103kg","n":13,"p10":269,"p25":300,"p50":356,"p75":389,"p90":426,"min":233,"max":438,"mean":342},{"i":4,"name":"Burpee BJ","desc":"80m","n":13,"p10":251,"p25":254,"p50":264,"p75":319,"p90":392,"min":178,"max":413,"mean":290},{"i":5,"name":"Row","desc":"1000m","n":13,"p10":287,"p25":302,"p50":309,"p75":331,"p90":351,"min":279,"max":397,"mean":318},{"i":6,"name":"Farmers Carry","desc":"200m·2×24kg","n":13,"p10":107,"p25":116,"p50":124,"p75":126,"p90":140,"min":101,"max":170,"mean":124},{"i":7,"name":"Sandbag Lunges","desc":"100m·20kg","n":13,"p10":293,"p25":308,"p50":379,"p75":419,"p90":465,"min":222,"max":744,"mean":390},{"i":8,"name":"Wall Balls","desc":"100·6kg","n":13,"p10":268,"p25":295,"p50":380,"p75":543,"p90":554,"min":255,"max":654,"mean":410}],"runs":[{"i":1,"n":13,"p10":209,"p25":215,"p50":255,"p75":270,"p90":390,"min":183,"max":441,"mean":268},{"i":2,"n":13,"p10":325,"p25":336,"p50":378,"p75":398,"p90":472,"min":320,"max":498,"mean":382},{"i":3,"n":13,"p10":333,"p25":345,"p50":397,"p75":449,"p90":497,"min":322,"max":538,"mean":403},{"i":4,"n":13,"p10":342,"p25":354,"p50":387,"p75":440,"p90":500,"min":333,"max":552,"mean":407},{"i":5,"n":13,"p10":358,"p25":360,"p50":407,"p75":455,"p90":516,"min":339,"max":596,"mean":424},{"i":6,"n":13,"p10":338,"p25":362,"p50":422,"p75":457,"p90":529,"min":335,"max":577,"mean":431},{"i":7,"n":13,"p10":341,"p25":375,"p50":436,"p75":464,"p90":508,"min":321,"max":604,"mean":431},{"i":8,"n":13,"p10":346,"p25":374,"p50":408,"p75":479,"p90":532,"min":342,"max":662,"mean":435}]},"HK25 Mixed All":{"label":"HK25 Mixed All","n_teams":589,"totals":{"n":589,"p10":4532,"p25":5039,"p50":5750,"p75":6528,"p90":7318,"min":3502,"max":10564,"mean":5865},"roxzone":{},"stations":[{"i":1,"name":"SkiErg","desc":"1000m","n":589,"p10":249,"p25":262,"p50":274,"p75":291,"p90":309,"min":227,"max":463,"mean":278},{"i":2,"name":"Sled Push","desc":"50m·152kg","n":589,"p10":121,"p25":139,"p50":164,"p75":199,"p90":239,"min":92,"max":531,"mean":175},{"i":3,"name":"Sled Pull","desc":"50m·103kg","n":589,"p10":216,"p25":259,"p50":298,"p75":358,"p90":407,"min":135,"max":915,"mean":310},{"i":4,"name":"Burpee BJ","desc":"80m","n":589,"p10":175,"p25":201,"p50":236,"p75":278,"p90":320,"min":99,"max":557,"mean":245},{"i":5,"name":"Row","desc":"1000m","n":589,"p10":271,"p25":284,"p50":303,"p75":325,"p90":345,"min":147,"max":453,"mean":306},{"i":6,"name":"Farmers Carry","desc":"200m·2×24kg","n":589,"p10":98,"p25":107,"p50":120,"p75":135,"p90":153,"min":68,"max":3137,"mean":130},{"i":7,"name":"Sandbag Lunges","desc":"100m·20kg","n":589,"p10":210,"p25":242,"p50":283,"p75":331,"p90":401,"min":150,"max":1522,"mean":300},{"i":8,"name":"Wall Balls","desc":"100·6kg","n":589,"p10":232,"p25":255,"p50":303,"p75":390,"p90":513,"min":182,"max":1307,"mean":346}],"runs":[{"i":1,"n":589,"p10":185,"p25":208,"p50":234,"p75":261,"p90":362,"min":144,"max":615,"mean":249},{"i":2,"n":588,"p10":306,"p25":340,"p50":382,"p75":427,"p90":506,"min":170,"max":936,"mean":398},{"i":3,"n":588,"p10":319,"p25":357,"p50":398,"p75":450,"p90":547,"min":142,"max":940,"mean":416},{"i":4,"n":588,"p10":321,"p25":358,"p50":401,"p75":461,"p90":552,"min":213,"max":988,"mean":421},{"i":5,"n":587,"p10":331,"p25":367,"p50":419,"p75":476,"p90":578,"min":250,"max":950,"mean":435},{"i":6,"n":588,"p10":326,"p25":363,"p50":412,"p75":467,"p90":551,"min":248,"max":965,"mean":428},{"i":7,"n":587,"p10":326,"p25":362,"p50":409,"p75":469,"p90":564,"min":257,"max":858,"mean":429},{"i":8,"n":589,"p10":321,"p25":364,"p50":421,"p75":527,"p90":673,"min":235,"max":1606,"mean":469}]}};
+
+const STATIONS = [
+  { key:'ski',     icon:'🎿', name:'SkiErg',         desc:'1000 m',          prField:'ski1k'    },
+  { key:'push',    icon:'🛷', name:'Sled Push',      desc:'50 m · 152 kg',   prField:'push50'   },
+  { key:'pull',    icon:'🪢', name:'Sled Pull',      desc:'50 m · 103 kg',   prField:'pull50'   },
+  { key:'burpee',  icon:'🤸', name:'Burpee BJ',      desc:'80 m',            prField:'burpee80' },
+  { key:'row',     icon:'🚣', name:'Row',            desc:'1000 m',          prField:'row1k'    },
+  { key:'farmers', icon:'🏋️', name:'Farmers Carry',  desc:'200 m · 2×24 kg', prField:'farm200'  },
+  { key:'sandbag', icon:'🦵', name:'Sandbag Lunges', desc:'100 m · 20 kg',   prField:'sand100'  },
+  { key:'wall',    icon:'🏀', name:'Wall Balls',     desc:'100 个 · 6 kg',   prField:'wall50'   },
+];
+const RUN_PR_FIELD = 'run1k';
+
+// 每个 PR = 完成该项目的总时间（不区分谁做的、怎么分工）
+const PR_FIELDS = [
+  { field:RUN_PR_FIELD, icon:'🏃', label:'1km 跑配速',          desc:'比赛中实际配速', benchType:'run' },
+  { field:'ski1k',      icon:'🎿', label:'SkiErg 1000m',         desc:'完成时间',       benchIdx:0 },
+  { field:'push50',     icon:'🛷', label:'Sled Push 50m',        desc:'152kg',          benchIdx:1 },
+  { field:'pull50',     icon:'🪢', label:'Sled Pull 50m',        desc:'103kg',          benchIdx:2 },
+  { field:'burpee80',   icon:'🤸', label:'Burpee BJ 80m',        desc:'完成时间',       benchIdx:3 },
+  { field:'row1k',      icon:'🚣', label:'Row 1000m',            desc:'完成时间',       benchIdx:4 },
+  { field:'farm200',    icon:'🏋️', label:'Farmers Carry 200m',   desc:'2×24kg',         benchIdx:5 },
+  { field:'sand100',    icon:'🦵', label:'Sandbag Lunges 100m',  desc:'20kg',           benchIdx:6 },
+  { field:'wall50',     icon:'🏀', label:'Wall Balls 100 个',    desc:'6kg',            benchIdx:7 },
+];
+
+//// ─────────── STORAGE ───────────
+const KEY = 'hyrox-shanghai-2026-v1';
+const DEFAULT_STATE = {
+  raceDate: '2026-05-16T08:00',
+  athletes: { a: 'Raymond', b: 'Lain' },
+  pr: {},
+  logs: [],
+  ui: { benchSet: 'HK25 Mixed 40-44' },
+};
+function load(){
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return structuredClone(DEFAULT_STATE);
+    const parsed = JSON.parse(raw);
+    // migrate old per-athlete pr {a:{},b:{}} → flat {ski1k:{},...}
+    let pr = parsed.pr || {};
+    if (pr.a !== undefined || pr.b !== undefined) pr = { ...(pr.b||{}), ...(pr.a||{}) };
+    return { ...structuredClone(DEFAULT_STATE), ...parsed,
+      athletes: { ...DEFAULT_STATE.athletes, ...(parsed.athletes||{}) },
+      pr,
+      logs: parsed.logs || [],
+      ui: { ...DEFAULT_STATE.ui, ...(parsed.ui||{}) },
+    };
+  } catch { return structuredClone(DEFAULT_STATE); }
+}
+function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+let state = load();
+
+//// ─────────── HELPERS ───────────
+const $ = (s) => document.querySelector(s);
+const fmt = {
+  pad: (n) => String(n).padStart(2,'0'),
+  hms(sec){
+    if (!sec || !isFinite(sec) || sec <= 0) return '--:--:--';
+    sec = Math.round(sec);
+    const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
+    return `${fmt.pad(h)}:${fmt.pad(m)}:${fmt.pad(s)}`;
+  },
+  ms(sec){
+    if (!sec || !isFinite(sec) || sec <= 0) return '--:--';
+    sec = Math.round(sec);
+    return `${fmt.pad(Math.floor(sec/60))}:${fmt.pad(sec%60)}`;
+  },
+};
+function prSec(field){
+  const v = state.pr?.[field];
+  if (!v) return 0;
+  return (v.m || 0) * 60 + (v.s || 0);
+}
+function prSet(field, m, s){
+  if (!m && !s) delete state.pr[field];
+  else state.pr[field] = { m: m||0, s: s||0 };
+  save();
+}
+
+//// ─────────── COUNTDOWN ───────────
+function tickCountdown(){
+  const target = new Date(state.raceDate).getTime();
+  const now = Date.now();
+  let diff = Math.max(0, target - now);
+  const d = Math.floor(diff / 86400000); diff -= d*86400000;
+  const h = Math.floor(diff / 3600000);  diff -= h*3600000;
+  const m = Math.floor(diff / 60000);    diff -= m*60000;
+  const s = Math.floor(diff / 1000);
+  $('#cd-d').textContent = fmt.pad(d);
+  $('#cd-h').textContent = fmt.pad(h);
+  $('#cd-m').textContent = fmt.pad(m);
+  $('#cd-s').textContent = fmt.pad(s);
+}
+setInterval(tickCountdown, 1000);
+
+function renderRaceMeta(){
+  const dt = new Date(state.raceDate);
+  if (!isNaN(dt)) {
+    const wkd = ['日','一','二','三','四','五','六'][dt.getDay()];
+    $('#race-date-disp').textContent = `${dt.getFullYear()}-${fmt.pad(dt.getMonth()+1)}-${fmt.pad(dt.getDate())} 周${wkd}`;
+  }
+  $('#team-disp').textContent = `${state.athletes.a} × ${state.athletes.b}`;
+}
+
+//// ─────────── ESTIMATE ───────────
+function estimate(){
+  const runPace = prSec(RUN_PR_FIELD);
+  const rows = [];
+  let total = 0;
+  let missing = 0;
+  // 8 × 1 km
+  const runTotal = runPace ? runPace * 8 : 0;
+  if (!runPace) missing++;
+  rows.push({ idx:'🏃', name:'8 × 1 km 跑', sub:'团队 race-pace × 8', sec: runTotal, run:true });
+  total += runTotal;
+
+  STATIONS.forEach((st, i) => {
+    const v = prSec(st.prField);
+    if (!v) missing++;
+    const fatigue = 1 + (i + 1) * 0.02;
+    const adjusted = v ? v * fatigue : 0;
+    rows.push({ idx: st.icon, num: i+1, name: st.name, sub: st.desc, sec: adjusted, run:false });
+    total += adjusted;
+  });
+
+  const overhead = 60;
+  total += overhead;
+  return { total, rows, missing, overhead };
+}
+
+// ─── BENCHMARK HELPERS ───
+function pctRank(value, p){
+  if (!value || !p || !p.p50) return null;
+  const pts = [[p.min, 100], [p.p10, 90], [p.p25, 75], [p.p50, 50], [p.p75, 25], [p.p90, 10], [p.max, 0]]
+    .filter(x => x[0] != null);
+  if (value <= pts[0][0]) return 99;
+  if (value >= pts[pts.length-1][0]) return 1;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const [x0,y0] = pts[i], [x1,y1] = pts[i+1];
+    if (value <= x1) {
+      if (x1 === x0) return Math.round(y0);
+      return Math.round(y0 + (y1-y0) * (value-x0)/(x1-x0));
+    }
+  }
+  return null;
+}
+function pctClass(p){
+  if (p == null) return '';
+  if (p >= 75) return 'elite';
+  if (p >= 50) return 'strong';
+  if (p >= 25) return 'mid';
+  return 'weak';
+}
+function getActiveBench(){
+  return HYROX_BENCH[state.ui.benchSet || 'HK25 Mixed 40-44'];
+}
+
+function renderEstimate(){
+  const { total, rows, missing, overhead } = estimate();
+  const allEmpty = rows.every(r => !r.sec);
+  $('#est-total').textContent = allEmpty ? '--:--:--' : fmt.hms(total);
+  const bench = getActiveBench();
+  let totalPct = null;
+  if (!allEmpty && bench) totalPct = pctRank(total, bench.totals);
+  if (allEmpty) {
+    $('#est-sub').textContent = '填入下方极限数据后自动计算';
+    $('#est-sub').className = 'est-sub';
+  } else if (missing > 0) {
+    $('#est-sub').textContent = `还有 ${missing} 项数据缺失，估算可能偏差较大`;
+    $('#est-sub').className = 'est-sub warn';
+  } else {
+    const tag = totalPct != null ? ` · 对标 ${bench.label} 约 P${totalPct}` : '';
+    $('#est-sub').textContent = `基于 PR · 含 ${overhead}s 交接${tag}`;
+    $('#est-sub').className = 'est-sub';
+  }
+  const html = rows.map(r => {
+    let badge = '';
+    if (!r.run && r.sec && bench && r.num) {
+      const stData = bench.stations[r.num - 1];
+      const pct = pctRank(r.sec, stData);
+      if (pct != null) badge = `<span class="pct ${pctClass(pct)}" style="margin-left:6px;font-size:9px;padding:1px 5px;border-radius:6px">P${pct}</span>`;
+    }
+    return `
+    <div class="est-row ${r.run?'run':''}">
+      <div class="idx">${r.idx}</div>
+      <div class="name">${r.name}<small>${r.sub}</small>${badge}</div>
+      <div class="val">${fmt.ms(r.sec)}</div>
+    </div>`;
+  }).join('');
+  $('#est-rows').innerHTML = html;
+}
+
+// ─── BENCHMARK CARD ───
+function renderBenchmark(){
+  const bench = getActiveBench();
+  if (!bench) return;
+  const ps = ['p25','p50'];
+  const t = bench.totals;
+  const { total: youTotal, rows } = estimate();
+  const youPct = youTotal ? pctRank(youTotal, t) : null;
+  $('#bench-total-grid').innerHTML = ps.map(k => `
+    <div><div class="pct-label">${k.toUpperCase()}</div><div class="pct-val">${fmt.hms(t[k])}</div></div>
+  `).join('') + (youTotal && youPct != null
+    ? `<div style="grid-column:1/-1;margin-top:6px;padding:8px;background:var(--accent-dim);border-radius:6px;text-align:center;font-size:12px;color:#ddd">
+         你的预估 <b style="color:var(--accent)">${fmt.hms(youTotal)}</b> · 约 <b style="color:var(--accent)">P${youPct}</b>（${bench.n_teams} 队中约第 ${Math.max(1, Math.round((100-youPct)/100 * bench.n_teams))} 名）
+       </div>` : '');
+  $('#bench-stations-body').innerHTML = bench.stations.map((s, i) => {
+    const youSec = rows[i+1]?.sec;
+    const yp = youSec ? pctRank(youSec, s) : null;
+    const pctColor = yp == null ? 'var(--muted)'
+      : yp >= 75 ? '#52ff9d'
+      : yp >= 50 ? 'var(--accent)'
+      : yp >= 25 ? '#FFD700'
+      : '#ff9d52';
+    const youCell = youSec
+      ? `<td><span style="color:#fff;font-weight:600">${fmt.ms(youSec)}</span> <span style="font-size:10px;font-weight:700;color:${pctColor}">P${yp ?? '?'}</span></td>`
+      : `<td style="color:var(--muted-2)">—</td>`;
+    const icon = STATIONS[i]?.icon || '';
+    return `<tr>
+      <td><span style="margin-right:6px">${icon}</span><span class="nm">${s.name}</span><span class="ds">${s.desc}</span></td>
+      <td>${fmt.ms(s.p25)}</td>
+      <td>${fmt.ms(s.p50)}</td>
+      ${youCell}
+    </tr>`;
+  }).join('');
+}
+
+document.querySelectorAll('#bench-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#bench-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    state.ui.benchSet = b.dataset.set;
+    save();
+    renderBenchmark();
+    renderEstimate();
+    renderPR();
+  });
+});
+
+$('#back-to-est-btn').addEventListener('click', () => {
+  $('#estimate-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+
+//// ─────────── PR INPUTS ───────────
+function getRunBench(bench){
+  if (!bench || !bench.runs) return null;
+  // Average percentile values across legs 2-8 (skip Run 1 which is from-line, not race-pace)
+  const legs = bench.runs.slice(1);
+  const out = {};
+  for (const k of ['p10','p25','p50','p75','p90','min','max']){
+    const vals = legs.map(l => l[k]).filter(v => v != null);
+    out[k] = vals.length ? vals.reduce((a,b)=>a+b,0) / vals.length : null;
+  }
+  return out;
+}
+function getPRBench(p, bench){
+  if (!bench) return null;
+  return p.benchType === 'run' ? getRunBench(bench) : bench.stations?.[p.benchIdx];
+}
+
+function updatePRBadges(){
+  const grid = $('#pr-grid');
+  if (!grid) return;
+  const bench = getActiveBench();
+  PR_FIELDS.forEach(p => {
+    const v = state.pr?.[p.field] || {};
+    const sec = (v.m||0)*60 + (v.s||0);
+    const target = getPRBench(p, bench);
+    const pct = (sec && target) ? pctRank(sec, target) : null;
+    const badgeEl = grid.querySelector(`[data-badge-field="${p.field}"]`);
+    if (!badgeEl) return;
+    if (pct != null) {
+      badgeEl.textContent = `前 ${100-pct}% · P${pct}`;
+      badgeEl.className = `pct ${pctClass(pct)}`;
+      badgeEl.style.display = '';
+    } else {
+      badgeEl.textContent = '';
+      badgeEl.style.display = 'none';
+    }
+  });
+}
+
+function renderPR(){
+  const grid = $('#pr-grid');
+  grid.innerHTML = PR_FIELDS.map(p => {
+    const v = state.pr?.[p.field] || {};
+    return `
+      <div class="pr-row">
+        <div class="label">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:18px;line-height:1">${p.icon}</span>
+            <span style="font-weight:600">${p.label}</span>
+          </div>
+          <div class="desc">${p.desc}</div>
+          <span class="pct" data-badge-field="${p.field}" style="display:none"></span>
+        </div>
+        <div class="input">
+          <input type="number" inputmode="numeric" min="0" data-field="${p.field}" data-part="m" value="${v.m??''}" placeholder="0"><span class="sep">:</span>
+          <input type="number" inputmode="numeric" min="0" data-field="${p.field}" data-part="s" value="${v.s??''}" placeholder="00">
+          <span class="unit">m:s</span>
+        </div>
+      </div>`;
+  }).join('');
+  grid.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const field = e.target.dataset.field;
+      const part = e.target.dataset.part;
+      const cur = { ...(state.pr?.[field] || { m:0, s:0 }) };
+      let val = parseInt(e.target.value, 10);
+      if (isNaN(val) || val < 0) val = 0;
+      cur[part] = val;
+      prSet(field, cur.m||0, cur.s||0);
+      // Update only badges + estimate/bench cards. Do NOT rebuild PR grid (would steal focus).
+      updatePRBadges();
+      renderEstimate();
+      renderBenchmark();
+    });
+  });
+  updatePRBadges();
+}
+
+//// ─────────── TRAINING LOG ───────────
+function todayISO(){
+  const d = new Date();
+  return `${d.getFullYear()}-${fmt.pad(d.getMonth()+1)}-${fmt.pad(d.getDate())}`;
+}
+function renderLogs(){
+  const list = $('#log-list');
+  if (!state.logs.length) {
+    list.innerHTML = `<div class="log-empty">还没有训练记录 · 点击上方按钮添加</div>`;
+    return;
+  }
+  const sorted = [...state.logs].sort((x,y) => y.date.localeCompare(x.date));
+  list.innerHTML = sorted.map(l => `
+    <div class="log-item" data-id="${l.id}">
+      <div class="log-item-head">
+        <span class="log-item-date">${l.date}</span>
+        <span class="log-item-type">${l.type}</span>
+      </div>
+      ${l.notes ? `<div class="log-item-detail">${escapeHTML(l.notes)}</div>` : ''}
+      <div class="log-item-meta">
+        ${l.duration ? `<span>⏱ ${l.duration} 分钟</span>` : ''}
+        ${l.distance ? `<span>📏 ${l.distance} km</span>` : ''}
+      </div>
+      <button class="log-item-del" data-id="${l.id}">删除</button>
+    </div>`).join('');
+  list.querySelectorAll('.log-item-del').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!confirm('确认删除这条训练记录？')) return;
+      state.logs = state.logs.filter(x => x.id !== btn.dataset.id);
+      save(); renderLogs();
+    });
+  });
+}
+function escapeHTML(s){ return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+const modal = $('#log-modal');
+$('#log-add-btn').addEventListener('click', () => {
+  $('#log-date').value = todayISO();
+  $('#log-type').value = '站点专项';
+  $('#log-duration').value = '';
+  $('#log-distance').value = '';
+  $('#log-notes').value = '';
+  modal.hidden = false;
+});
+$('#log-cancel').addEventListener('click', () => { modal.hidden = true; });
+$('#log-save').addEventListener('click', () => {
+  const entry = {
+    id: 'l_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+    date: $('#log-date').value || todayISO(),
+    type: $('#log-type').value,
+    duration: $('#log-duration').value ? Number($('#log-duration').value) : null,
+    distance: $('#log-distance').value ? Number($('#log-distance').value) : null,
+    notes: $('#log-notes').value.trim(),
+  };
+  state.logs.push(entry);
+  save();
+  modal.hidden = true;
+  renderLogs();
+});
+modal.addEventListener('click', e => { if (e.target === modal) modal.hidden = true; });
+
+//// ─────────── SETTINGS ───────────
+$('#set-race-date').value = state.raceDate;
+$('#set-athlete-a').value = state.athletes.a;
+$('#set-athlete-b').value = state.athletes.b;
+$('#set-race-date').addEventListener('change', e => {
+  state.raceDate = e.target.value || DEFAULT_STATE.raceDate;
+  save(); renderRaceMeta(); tickCountdown();
+});
+$('#set-athlete-a').addEventListener('input', e => {
+  state.athletes.a = e.target.value.trim() || 'Athlete A';
+  save(); renderRaceMeta();
+});
+$('#set-athlete-b').addEventListener('input', e => {
+  state.athletes.b = e.target.value.trim() || 'Athlete B';
+  save(); renderRaceMeta();
+});
+
+$('#export-btn').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `hyrox-${todayISO()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+$('#import-btn').addEventListener('click', () => $('#import-file').click());
+$('#import-file').addEventListener('change', e => {
+  const f = e.target.files?.[0];
+  if (!f) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      if (!parsed || typeof parsed !== 'object') throw new Error('invalid');
+      if (!confirm('将覆盖当前所有数据，确认导入？')) return;
+      state = { ...DEFAULT_STATE, ...parsed,
+        athletes: { ...DEFAULT_STATE.athletes, ...(parsed.athletes||{}) },
+        pr: { a: {...(parsed.pr?.a||{})}, b: {...(parsed.pr?.b||{})} },
+        logs: parsed.logs || [],
+        ui: { ...DEFAULT_STATE.ui, ...(parsed.ui||{}) },
+      };
+      save();
+      location.reload();
+    } catch { alert('导入失败：文件格式不正确'); }
+  };
+  reader.readAsText(f);
+});
+$('#reset-btn').addEventListener('click', () => {
+  if (!confirm('清空所有训练数据、PR、设置？此操作不可撤销。')) return;
+  localStorage.removeItem(KEY);
+  location.reload();
+});
+
+//// ─────────── INIT ───────────
+function init(){
+  // restore active benchmark set
+  const bs = state.ui.benchSet || 'HK25 Mixed 40-44';
+  document.querySelectorAll('#bench-toggle button').forEach(b => {
+    b.classList.toggle('active', b.dataset.set === bs);
+  });
+  renderRaceMeta();
+  renderPR();
+  renderEstimate();
+  renderBenchmark();
+  renderLogs();
+  tickCountdown();
+}
+init();
+</script>
+</body>
+</html>
